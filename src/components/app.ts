@@ -1,5 +1,7 @@
 import Table from './table';
 
+import SelectField from './select-field';
+
 import CarsCollection from '../helpers/cars-collection';
 import stringifyProps from '../helpers/stingify-object';
 
@@ -12,6 +14,8 @@ class App {
 
   private carsCollection: CarsCollection;
 
+  private brandSelect: SelectField;
+
   constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
 
@@ -22,6 +26,11 @@ class App {
 
     this.htmlElement = foundElement;
     this.carsCollection = new CarsCollection({ cars, models, brands });
+
+    this.brandSelect = new SelectField({
+      labelText: 'Markė',
+      options: brands.map(({ id, title }) => ({ title, value: id })),
+    });
   }
 
   initialize = (): void => {
@@ -39,7 +48,7 @@ class App {
 
     const container = document.createElement('div');
     container.className = 'container my-5';
-    container.appendChild(carTableInfo.htmlElement);
+    container.append(this.brandSelect.htmlElement, carTableInfo.htmlElement);
 
     this.htmlElement.append(container);
   };
