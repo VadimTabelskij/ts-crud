@@ -1,15 +1,18 @@
 import Table from './table';
 
-import SelectField from './select-field';
+import cars from '../data/cars';
+import brands from '../data/brands';
+import models from '../data/models';
 
 import CarsCollection from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-props';
 
-import cars from '../data/cars';
-import models from '../data/models';
-import brands from '../data/brands';
+import SelectField from './select-field';
 
-import CarJoined from '../types/car-joined';
+import type CarJoined from '../types/car-joined';
+
+const ALL_CAR_TITLE = 'Visi automobiliai' as const;
+const ALL_BRAND_TITLE = 'Markė' as const;
 
 class App {
   private htmlElement: HTMLElement;
@@ -22,7 +25,7 @@ class App {
 
   private brandSelect: SelectField;
 
-  constructor(selector: string) {
+  public constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
 
     if (foundElement === null) { throw new Error(`Nerastas elementas su selektoriumi '${selector}'`); }
@@ -34,22 +37,26 @@ class App {
     this.selectedBrandId = null;
     this.carsCollection = new CarsCollection({ cars, models, brands });
     this.carTable = new Table({
-      title: 'Visi automobiliai',
+      title: ALL_CAR_TITLE,
       columns: {
         id: 'Id',
-        brand: 'Markė',
+        brand: ALL_BRAND_TITLE,
         model: 'Modelis',
         price: 'Kaina',
         year: 'Metai',
       },
       rowsData: this.carsCollection.all.map(stringifyProps),
+      onDelete: this.handleCarDelete,
     });
 
     this.brandSelect = new SelectField({
-      labelText: 'Markė',
+      labelText: ALL_BRAND_TITLE,
       options: brands.map(({ id, title }) => ({ title, value: id })),
       onChange: this.handleBrandChange,
     });
+    this.selectedBrandId = null;
+
+    this.htmlElement = foundElement;
 
     this.initialize();
   }
@@ -65,7 +72,7 @@ class App {
 
     if (selectedBrandId === null) {
       this.carTable.updateProps({
-        title: 'Visi automobiliai',
+        title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
       });
     } else {
@@ -77,6 +84,12 @@ class App {
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
       });
     }
+  };
+
+  private handleCarDelete = (carId: string): void => {
+    this.carsCollection.deleteCarById(carId);
+
+    this.update();
   };
 
   public initialize = (): void => {
