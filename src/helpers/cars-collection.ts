@@ -4,9 +4,9 @@ import Model from '../types/model';
 import CarJoined from '../types/car-joined';
 
 type CarsCollectionProps = {
-  cars: Car[];
-  brands: Brand[];
-  models: Model[];
+  cars: Car[],
+  brands: Brand[],
+  models: Model[],
 };
 
 class CarsCollection {
@@ -38,12 +38,9 @@ class CarsCollection {
     const brandModelsIds = models
       .filter((model) => model.brandId === brandId)
       .map((model) => model.id);
-
-    const brandCars = cars
+    return cars
       .filter((car) => brandModelsIds.includes(car.modelId))
       .map(this.joinCar);
-
-    return brandCars;
   };
 }
 
