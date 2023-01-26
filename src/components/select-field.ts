@@ -4,9 +4,11 @@ type OptionType = {
 };
 
 export type SelectFieldProps = {
+  name?: string,
   labelText: string,
-  onChange: (newValue: string) => void,
+  onChange?: (newValue: string) => void,
   options: OptionType[],
+  value?: string,
 };
 
 class SelectField {
@@ -48,26 +50,41 @@ class SelectField {
   };
 
   private renderView = (): void => {
-    const { labelText, onChange } = this.props;
+    const { labelText, onChange, name } = this.props;
 
     this.htmlLabelElement.innerHTML = labelText;
-    this.htmlSelectElement.addEventListener('change', () => onChange(this.htmlSelectElement.value));
+    if (onChange) {
+      this.htmlSelectElement.addEventListener('change', () => onChange(this.htmlSelectElement.value));
+    }
+    if (name) {
+      this.htmlSelectElement.name = name;
+    }
     this.renderSelectOptions();
   };
 
   private renderSelectOptions = (): void => {
-    const { options } = this.props;
+    const { options, value } = this.props;
 
     const optionsHtmlElements = options.map((option) => {
       const element = document.createElement('option');
       element.innerHTML = option.title;
       element.value = option.value;
+      element.selected = option.value === value;
 
       return element;
     });
 
     this.htmlSelectElement.innerHTML = '';
     this.htmlSelectElement.append(...optionsHtmlElements);
+  };
+
+  public updateProps = (newProps: Partial<SelectFieldProps>): void => {
+    this.props = {
+      ...this.props,
+      ...newProps,
+    };
+
+    this.renderView();
   };
 }
 
