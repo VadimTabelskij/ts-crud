@@ -71,7 +71,7 @@ class CarForm {
   }
 
   private initialize = (): void => {
-    this.htmlFormHeader.className = 'h3 text-center';
+    this.htmlFormHeader.className = 'h3 text-center text-primary';
 
     const fieldsArr = Object.values(this.fields);
     this.htmlFieldsContainer.className = 'd-flex flex-column gap-3';
@@ -79,7 +79,7 @@ class CarForm {
 
     this.htmlSubmitBtn.className = 'btn btn-primary';
 
-    this.htmlElement.className = 'card d-flex flex-column gap-3 p-3';
+    this.htmlElement.className = 'card d-flex flex-column gap-3 p-3 shadow';
     this.htmlElement.append(
       this.htmlFormHeader,
       this.htmlFieldsContainer,
