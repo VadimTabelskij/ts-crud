@@ -46,7 +46,7 @@ class Table<Type extends TablesRowData> {
     const { rowsData, columns } = this.props;
 
     if (this.props.rowsData.length === 0) return;
-    const columnCount = countObjectProperties(columns);
+    const columnCount = countObjectProperties(columns) + 1;
 
     const columnsWithRowsData = rowsData.every((row) => {
       const rowCount = countObjectProperties(row);

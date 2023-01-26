@@ -1,4 +1,4 @@
-import Car from '../types/car';
+import type Car from '../types/car';
 
 const cars: Car[] = [
   {

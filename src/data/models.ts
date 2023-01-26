@@ -1,4 +1,4 @@
-import Model from '../types/model';
+import type Model from '../types/model';
 
 const models: Model[] = [{
   id: '1',

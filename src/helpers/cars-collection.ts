@@ -1,8 +1,8 @@
 import { v4 as createId } from 'uuid';
-import Car from '../types/car';
-import Model from '../types/model';
-import Brand from '../types/brand';
-import CarJoined from '../types/car-joined';
+import type Car from '../types/car';
+import type Model from '../types/model';
+import type Brand from '../types/brand';
+import type CarJoined from '../types/car-joined';
 
 type CarsCollectionProps = {
   cars: Car[],
@@ -18,7 +18,7 @@ export type CarProps = {
 };
 
 class CarsCollection {
-  constructor(private props: CarsCollectionProps) { }
+  public constructor(private props: CarsCollectionProps) { }
 
   private joinCar = ({ modelId, ...car }: Car) => {
     const { brands, models } = this.props;

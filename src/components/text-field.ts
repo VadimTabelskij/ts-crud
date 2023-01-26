@@ -5,9 +5,9 @@ export type TextFieldProps = {
 };
 
 class TextField {
-  private static uniqID: number = 0;
-
   private props: TextFieldProps;
+
+  private static uniqID: number = 0;
 
   private id: string;
 
@@ -18,9 +18,10 @@ class TextField {
   public htmlElement: HTMLDivElement;
 
   public constructor(props: TextFieldProps) {
+    this.props = props;
+
     TextField.uniqID += 1;
     this.id = `TextField_${TextField.uniqID}`;
-    this.props = props;
 
     this.htmlElement = document.createElement('div');
     this.label = document.createElement('label');

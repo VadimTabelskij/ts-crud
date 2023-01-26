@@ -12,9 +12,9 @@ export type SelectFieldProps = {
 };
 
 class SelectField {
-  private static UNIQ_ID = 0 as const;
-
   private props: SelectFieldProps;
+
+  private static UNIQ_ID = 0 as const;
 
   private htmlSelectElement: HTMLSelectElement;
 
@@ -22,7 +22,7 @@ class SelectField {
 
   public htmlElement: HTMLDivElement;
 
-  constructor(props: SelectFieldProps) {
+  public constructor(props: SelectFieldProps) {
     this.props = props;
 
     SelectField.UNIQ_ID += 1;
@@ -49,19 +49,6 @@ class SelectField {
     );
   };
 
-  private renderView = (): void => {
-    const { labelText, onChange, name } = this.props;
-
-    this.htmlLabelElement.innerHTML = labelText;
-    if (onChange) {
-      this.htmlSelectElement.addEventListener('change', () => onChange(this.htmlSelectElement.value));
-    }
-    if (name) {
-      this.htmlSelectElement.name = name;
-    }
-    this.renderSelectOptions();
-  };
-
   private renderSelectOptions = (): void => {
     const { options, value } = this.props;
 
@@ -76,6 +63,19 @@ class SelectField {
 
     this.htmlSelectElement.innerHTML = '';
     this.htmlSelectElement.append(...optionsHtmlElements);
+  };
+
+  private renderView = (): void => {
+    const { labelText, onChange, name } = this.props;
+
+    this.htmlLabelElement.innerHTML = labelText;
+    if (onChange) {
+      this.htmlSelectElement.addEventListener('change', () => onChange(this.htmlSelectElement.value));
+    }
+    if (name) {
+      this.htmlSelectElement.name = name;
+    }
+    this.renderSelectOptions();
   };
 
   public updateProps = (newProps: Partial<SelectFieldProps>): void => {
