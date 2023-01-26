@@ -1,7 +1,7 @@
 export type TextFieldProps = {
   labelText: string;
   name: string,
-  value: string,
+  value?: string,
 };
 
 class TextField {
@@ -21,6 +21,7 @@ class TextField {
     TextField.uniqID += 1;
     this.id = `TextField_${TextField.uniqID}`;
     this.props = props;
+
     this.htmlElement = document.createElement('div');
     this.label = document.createElement('label');
     this.input = document.createElement('input');
@@ -44,8 +45,6 @@ class TextField {
 
   private renderView = () => {
     this.label.innerText = this.props.labelText;
-
-    this.input.value = this.props.value;
     this.input.name = this.props.name;
   };
 
