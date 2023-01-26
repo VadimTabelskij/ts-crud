@@ -77,9 +77,11 @@ class CarForm {
     this.htmlFieldsContainer.className = 'd-flex flex-column gap-3';
     this.htmlFieldsContainer.append(...fieldsArr.map((field) => field.htmlElement));
 
-    this.htmlSubmitBtn.className = 'btn btn-primary';
+    this.htmlSubmitBtn.className = 'btn btn-primary mt-3 w-100';
+    this.htmlSubmitBtn.type = 'submit';
 
-    this.htmlElement.className = 'card d-flex flex-column gap-3 p-3 shadow';
+    this.htmlElement.className = 'shadow p-3 border border-primary';
+
     this.htmlElement.append(
       this.htmlFormHeader,
       this.htmlFieldsContainer,
@@ -112,6 +114,7 @@ class CarForm {
     };
 
     onSubmit(formValues);
+    this.htmlElement.reset();
   };
 
   private renderView = (): void => {
