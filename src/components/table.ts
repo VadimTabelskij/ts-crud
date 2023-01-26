@@ -7,7 +7,7 @@ type TablesRowData = {
 
 export type TableProps<Type> = {
   title: string,
-  columns: Type,
+  columns: Omit<Type, 'id'>,
   rowsData: Type[],
   onDelete: (id: string) => void,
 };
@@ -15,9 +15,9 @@ export type TableProps<Type> = {
 class Table<Type extends TablesRowData> {
   private props: TableProps<Type>;
 
-  private tbody: HTMLTableSectionElement;
-
   private thead: HTMLTableSectionElement;
+
+  private tbody: HTMLTableSectionElement;
 
   public htmlElement: HTMLTableElement;
 
@@ -33,6 +33,14 @@ class Table<Type extends TablesRowData> {
     this.initialize();
     this.renderView();
   }
+
+  private initialize = (): void => {
+    this.htmlElement.className = 'table table-striped order border p-3';
+    this.htmlElement.append(
+      this.thead,
+      this.tbody,
+    );
+  };
 
   private checkColumns = (): void => {
     const { rowsData, columns } = this.props;
@@ -50,20 +58,7 @@ class Table<Type extends TablesRowData> {
     }
   };
 
-  private initialize = (): void => {
-    this.htmlElement.className = 'table table-striped order border p-3';
-    this.htmlElement.append(
-      this.thead,
-      this.tbody,
-    );
-  };
-
-  private renderView = (): void => {
-    this.renderHead();
-    this.renderBody();
-  };
-
-  private renderHead = () => {
+  private renderHeadView = () => {
     const thElementsString = Object.values(this.props.columns)
       .map((columnName) => `<th>${columnName}</th>`)
       .join('');
@@ -81,7 +76,7 @@ class Table<Type extends TablesRowData> {
     `;
   };
 
-  private renderBody = () => {
+  private renderBodyView = () => {
     this.tbody.innerHTML = '';
     const rows = this.props.rowsData
       .map((rowData) => {
@@ -103,6 +98,11 @@ class Table<Type extends TablesRowData> {
       });
 
     this.tbody.append(...rows);
+  };
+
+  private renderView = (): void => {
+    this.renderHeadView();
+    this.renderBodyView();
   };
 
   public updateProps = (newProps: Partial<TableProps<Type>>): void => {

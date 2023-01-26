@@ -30,16 +30,15 @@ class App {
     if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
     if (!(foundElement instanceof HTMLElement)) throw new Error('Turi egzistuoti HTML elementas');
 
-    this.selectedBrandId = null;
-
     this.htmlElement = foundElement;
+
+    this.selectedBrandId = null;
 
     this.carsCollection = new CarsCollection({ cars, models, brands });
 
     this.carTable = new Table({
       title: ALL_CAR_TITLE,
       columns: {
-        id: 'Id',
         brand: ALL_BRAND_TITLE,
         model: 'Modelis',
         price: 'Kaina',
@@ -68,7 +67,7 @@ class App {
         price: '0',
         year: '2000',
       },
-      onSubmit: this.handleCreateCar,
+      onSubmit: this.handleCarCreate,
     });
   }
 
@@ -76,16 +75,16 @@ class App {
     const brand = brands.find((newBrand) => newBrand.id === brandId);
     this.selectedBrandId = brand ? brandId : null;
 
-    this.renderView();
+    this.update();
   };
 
   private handleCarDelete = (carId: string) => {
     this.carsCollection.deleteCarById(carId);
 
-    this.renderView();
+    this.update();
   };
 
-  private handleCreateCar = ({
+  private handleCarCreate = ({
     brand, model, price, year,
   }: Values): void => {
     const carProps: CarProps = {
@@ -97,10 +96,10 @@ class App {
 
     this.carsCollection.add(carProps);
 
-    this.renderView();
+    this.update();
   };
 
-  private renderView = () => {
+  private update = () => {
     const { selectedBrandId, carsCollection } = this;
 
     if (selectedBrandId === null) {
