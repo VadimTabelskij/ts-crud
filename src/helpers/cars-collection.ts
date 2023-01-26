@@ -1,6 +1,7 @@
+import { v4 as createId } from 'uuid';
 import Car from '../types/car';
-import Brand from '../types/brand';
 import Model from '../types/model';
+import Brand from '../types/brand';
 import CarJoined from '../types/car-joined';
 
 type CarsCollectionProps = {
@@ -9,15 +10,19 @@ type CarsCollectionProps = {
   models: Model[],
 };
 
-class CarsCollection {
-  private props: CarsCollectionProps;
+export type CarProps = {
+  brandId: string,
+  modelId: string,
+  price: number,
+  year: number
+};
 
-  constructor(props: CarsCollectionProps) {
-    this.props = props;
-  }
+class CarsCollection {
+  constructor(private props: CarsCollectionProps) { }
 
   private joinCar = ({ modelId, ...car }: Car) => {
     const { brands, models } = this.props;
+
     const carModel = models.find((model) => model.id === modelId);
     const carBrand = brands.find((brand) => brand.id === carModel?.brandId);
 
@@ -38,13 +43,34 @@ class CarsCollection {
     const brandModelsIds = models
       .filter((model) => model.brandId === brandId)
       .map((model) => model.id);
-    return cars
+
+    const brandByCars = cars
       .filter((car) => brandModelsIds.includes(car.modelId))
       .map(this.joinCar);
+
+    return brandByCars;
   };
 
   public deleteCarById = (carId: string): void => {
     this.props.cars = this.props.cars.filter((car) => car.id !== carId);
+  };
+
+  public add = ({ modelId, brandId, ...carProps }: CarProps): void => {
+    const { models, brands, cars } = this.props;
+    const model = models.find((newModel) => newModel.id === modelId);
+    const brand = brands.find((newBrand) => newBrand.id === brandId);
+
+    if (!model || !brand) {
+      throw new Error('Netinkami duomenys sukurti automobilį');
+    }
+
+    const newCar: Car = {
+      id: createId(),
+      ...carProps,
+      modelId,
+    };
+
+    cars.push(newCar);
   };
 }
 
