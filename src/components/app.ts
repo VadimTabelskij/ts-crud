@@ -1,41 +1,41 @@
 import Table from './table';
-
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
-
-import CarsCollection from '../helpers/cars-collection';
+import CarsCollection, { CarProps } from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-props';
-
-import SelectField from './select-field';
-
 import type CarJoined from '../types/car-joined';
+import SelectField from './select-field';
+import CarForm, { Values } from './car-form';
 
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
+const ALL_BRAND_ID = '-1' as const;
 
 class App {
-  private htmlElement: HTMLElement;
-
   private carsCollection: CarsCollection;
 
   private selectedBrandId: null | string;
 
+  private brandSelect: SelectField;
+
   private carTable: Table<StringifyObjectProps<CarJoined>>;
 
-  private brandSelect: SelectField;
+  private carForm: CarForm;
+
+  private htmlElement: HTMLElement;
 
   public constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
+    if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
+    if (!(foundElement instanceof HTMLElement)) throw new Error('Turi egzistuoti HTML elementas');
 
-    if (foundElement === null) { throw new Error(`Nerastas elementas su selektoriumi '${selector}'`); }
-    if (!(foundElement instanceof HTMLElement)) {
-      throw new Error('Turi egzistuoti HTML elementas');
-    }
+    this.selectedBrandId = null;
 
     this.htmlElement = foundElement;
-    this.selectedBrandId = null;
+
     this.carsCollection = new CarsCollection({ cars, models, brands });
+
     this.carTable = new Table({
       title: ALL_CAR_TITLE,
       columns: {
@@ -51,23 +51,56 @@ class App {
 
     this.brandSelect = new SelectField({
       labelText: ALL_BRAND_TITLE,
-      options: brands.map(({ id, title }) => ({ title, value: id })),
+      options: [
+        { title: ALL_CAR_TITLE, value: ALL_BRAND_ID },
+        ...brands.map(({ id, title }) => ({ title, value: id })),
+      ],
       onChange: this.handleBrandChange,
     });
-    this.selectedBrandId = null;
 
-    this.htmlElement = foundElement;
-
-    this.initialize();
+    const initialBrandId = brands[0].id;
+    this.carForm = new CarForm({
+      title: 'Sukurkite naują automobilį',
+      submitBtnText: 'Sukurti',
+      values: {
+        brand: initialBrandId,
+        model: models.filter((m) => m.brandId === initialBrandId)[0].id,
+        price: '0',
+        year: '2000',
+      },
+      onSubmit: this.handleCreateCar,
+    });
   }
 
-  private handleBrandChange = (brandId: string): void => {
-    this.selectedBrandId = brandId;
+  private handleBrandChange = (brandId: string) => {
+    const brand = brands.find((newBrand) => newBrand.id === brandId);
+    this.selectedBrandId = brand ? brandId : null;
 
-    this.update();
+    this.renderView();
   };
 
-  private update = (): void => {
+  private handleCarDelete = (carId: string) => {
+    this.carsCollection.deleteCarById(carId);
+
+    this.renderView();
+  };
+
+  private handleCreateCar = ({
+    brand, model, price, year,
+  }: Values): void => {
+    const carProps: CarProps = {
+      brandId: brand,
+      modelId: model,
+      price: Number(price),
+      year: Number(year),
+    };
+
+    this.carsCollection.add(carProps);
+
+    this.renderView();
+  };
+
+  private renderView = () => {
     const { selectedBrandId, carsCollection } = this;
 
     if (selectedBrandId === null) {
@@ -77,7 +110,7 @@ class App {
       });
     } else {
       const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
-      if (brand === undefined) throw new Error('Pasirinkta neegzistuojanti markė');
+      if (brand === undefined) throw new Error(`Pasirinkta neegzistuojanti ${ALL_BRAND_TITLE}`);
 
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
@@ -86,18 +119,19 @@ class App {
     }
   };
 
-  private handleCarDelete = (carId: string): void => {
-    this.carsCollection.deleteCarById(carId);
-
-    this.update();
-  };
-
   public initialize = (): void => {
+    const uxContainer = document.createElement('div');
+    uxContainer.className = 'd-flex gap-4 align-items-start';
+    uxContainer.append(
+      this.carTable.htmlElement,
+      this.carForm.htmlElement,
+    );
+
     const container = document.createElement('div');
-    container.className = 'container my-4 d-flex  flex-column gap-3';
+    container.className = 'container my-4 d-flex flex-column gap-4';
     container.append(
       this.brandSelect.htmlElement,
-      this.carTable.htmlElement,
+      uxContainer,
     );
 
     this.htmlElement.append(container);
