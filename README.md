@@ -32,7 +32,7 @@ Update webpack.config.common.js ( Upade example:
     },
   };)
 
-Then add the plugin to your webpack config.js For example:(file.js import css from "file.css")
+For example:(file.js import css from "file.css")
 ```
 
 ## Project initialization
