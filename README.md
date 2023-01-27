@@ -18,7 +18,7 @@ npm install uuid (library for unique id)
 
 npm install --save-dev @types/uuid (added devDependencies types for unique id)
 
-npm install --save-dev css-loader (added ddevDependencies install css-loader)
+npm install --save-dev style-loader  css-loader (added ddevDependencies install css-loader)
 
 Update webpack.config.common.js ( Upade example:
   module.exports = {
