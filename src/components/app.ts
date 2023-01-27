@@ -17,6 +17,8 @@ class App {
 
   private selectedBrandId: null | string;
 
+  private editedCarId: null | string;
+
   private brandSelect: SelectField;
 
   private carTable: Table<StringifyObjectProps<CarJoined>>;
@@ -34,6 +36,8 @@ class App {
 
     this.selectedBrandId = null;
 
+    this.editedCarId = null;
+
     this.carsCollection = new CarsCollection({ cars, models, brands });
 
     this.carTable = new Table({
@@ -46,6 +50,7 @@ class App {
       },
       rowsData: this.carsCollection.all.map(stringifyProps),
       onDelete: this.handleCarDelete,
+      onEdit: this.handleCarEdit,
     });
 
     this.brandSelect = new SelectField({
@@ -82,6 +87,12 @@ class App {
     this.carsCollection.deleteCarById(carId);
 
     this.update();
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  private handleCarEdit = (carId: string) => {
+    this.editedCarId = carId;
+    console.log('veikia', this.editedCarId);
   };
 
   private handleCarCreate = ({

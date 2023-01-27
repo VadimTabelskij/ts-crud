@@ -10,6 +10,7 @@ export type TableProps<Type> = {
   columns: Omit<Type, 'id'>,
   rowsData: Type[],
   onDelete: (id: string) => void,
+  onEdit: (id: string) => void,
 };
 
 class Table<Type extends TablesRowData> {
@@ -82,11 +83,20 @@ class Table<Type extends TablesRowData> {
       .map((rowData) => {
         const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger btn-sm';
-        deleteButton.innerText = '❌';
+        deleteButton.innerText = '🗙';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn btn-warning btn-sm';
+        updateButton.innerText = '↻';
+
+        const containerButton = document.createElement('div');
+        containerButton.className = 'd-flex gap-2 justify-content-end';
+        containerButton.append(updateButton, deleteButton);
+        containerButton.addEventListener('click', () => this.props.onEdit(rowData.id));
+
         const td = document.createElement('td');
-        td.append(deleteButton);
+        td.append(containerButton);
 
         const tr = document.createElement('tr');
         tr.innerHTML = Object.keys(this.props.columns)
