@@ -9,6 +9,7 @@ export type TableProps<Type> = {
   title: string,
   columns: Omit<Type, 'id'>,
   rowsData: Type[],
+  editedCarId: string | null,
   onDelete: (id: string) => void,
   onEdit: (id: string) => void,
 };
@@ -81,24 +82,27 @@ class Table<Type extends TablesRowData> {
     this.tbody.innerHTML = '';
     const rows = this.props.rowsData
       .map((rowData) => {
+        const thisRowIsEdited = this.props.editedCarId === rowData.id;
+
         const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.className = 'btn btn-row btn-danger btn-sm';
         deleteButton.innerText = '🗙';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
         const updateButton = document.createElement('button');
-        updateButton.className = 'btn btn-warning btn-sm';
-        updateButton.innerText = '↻';
+        updateButton.className = `btn btn-action btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm`;
+        updateButton.innerText = thisRowIsEdited ? '🛇' : '↻';
+        updateButton.addEventListener('click', () => this.props.onEdit(rowData.id));
 
         const containerButton = document.createElement('div');
         containerButton.className = 'd-flex gap-2 justify-content-end';
         containerButton.append(updateButton, deleteButton);
-        containerButton.addEventListener('click', () => this.props.onEdit(rowData.id));
 
         const td = document.createElement('td');
         td.append(containerButton);
 
         const tr = document.createElement('tr');
+        if (this.props.editedCarId === rowData.id) tr.classList.add('row-active');
         tr.innerHTML = Object.keys(this.props.columns)
           .map((key) => `<td>${rowData[key]}</td>`)
           .join('');

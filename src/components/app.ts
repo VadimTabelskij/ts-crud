@@ -17,7 +17,7 @@ class App {
 
   private selectedBrandId: null | string;
 
-  private editedCarId: null | string;
+  private editedCarId: string | null;
 
   private brandSelect: SelectField;
 
@@ -51,6 +51,7 @@ class App {
       rowsData: this.carsCollection.all.map(stringifyProps),
       onDelete: this.handleCarDelete,
       onEdit: this.handleCarEdit,
+      editedCarId: this.editedCarId,
     });
 
     this.brandSelect = new SelectField({
@@ -89,10 +90,9 @@ class App {
     this.update();
   };
 
-  // eslint-disable-next-line class-methods-use-this
   private handleCarEdit = (carId: string) => {
-    this.editedCarId = carId;
-    console.log('veikia', this.editedCarId);
+    this.editedCarId = carId === this.editedCarId ? null : carId;
+    this.update();
   };
 
   private handleCarCreate = ({
@@ -117,6 +117,7 @@ class App {
       this.carTable.updateProps({
         title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
+        editedCarId: this.editedCarId,
       });
     } else {
       const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
@@ -125,6 +126,7 @@ class App {
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
+        editedCarId: this.editedCarId,
       });
     }
   };
