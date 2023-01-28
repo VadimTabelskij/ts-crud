@@ -138,6 +138,7 @@ class CarForm {
 
   private renderView = (): void => {
     const { title, values, submitBtnText } = this.props;
+
     this.htmlFormHeader.innerHTML = title;
     this.htmlSubmitBtn.innerHTML = submitBtnText;
 

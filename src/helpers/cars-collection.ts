@@ -14,7 +14,7 @@ export type CarProps = {
   brandId: string,
   modelId: string,
   price: number,
-  year: number
+  year: number,
 };
 
 class CarsCollection {
@@ -73,7 +73,7 @@ class CarsCollection {
     cars.push(newCar);
   };
 
-  public carUpdate = (carId: string, { brandId, modelId, ...props }: CarProps) => {
+  public updateCar = (carId: string, { brandId, modelId, ...props }: CarProps) => {
     const { cars, models, brands } = this.props;
 
     const updatedCarIndex = cars.findIndex((newCar) => newCar.id === carId);

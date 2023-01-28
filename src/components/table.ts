@@ -26,12 +26,11 @@ class Table<Type extends TablesRowData> {
   public constructor(props: TableProps<Type>) {
     this.props = props;
 
-    this.checkColumns();
-
     this.htmlElement = document.createElement('table');
     this.thead = document.createElement('thead');
     this.tbody = document.createElement('tbody');
 
+    this.checkColumns();
     this.initialize();
     this.renderView();
   }
@@ -55,6 +54,7 @@ class Table<Type extends TablesRowData> {
 
       return rowCount === columnCount;
     });
+
     if (!columnsWithRowsData) {
       throw new Error('Nesutampa lentelės stulpelių skaičius su eilučių stulpelių skaičiumi');
     }
@@ -88,6 +88,7 @@ class Table<Type extends TablesRowData> {
         deleteButton.className = 'btn btn-row btn-danger btn-sm';
         deleteButton.innerText = '🗙';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
+        if (this.props.editedCarId !== null) deleteButton.setAttribute('disabled', 'true');
 
         const updateButton = document.createElement('button');
         updateButton.className = `btn btn-row btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm`;

@@ -11,6 +11,7 @@ import CarForm, { Values } from './car-form';
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
 const ALL_BRAND_ID = '-1' as const;
+const initialBrandId = brands[0].id;
 
 class App {
   private carsCollection: CarsCollection;
@@ -54,6 +55,20 @@ class App {
       editedCarId: this.editedCarId,
     });
 
+    this.carForm = new CarForm({
+      title: 'Sukurkite nauja automobilį',
+      submitBtnText: 'Sukurti',
+      values: {
+        brand: initialBrandId,
+        model: models.filter((m) => m.brandId === initialBrandId)[0].id,
+        price: '0',
+        year: '2000',
+      },
+      status: 'create',
+      onSubmit: this.handleCarCreate,
+
+    });
+
     this.brandSelect = new SelectField({
       labelText: ALL_BRAND_TITLE,
       options: [
@@ -62,38 +77,26 @@ class App {
       ],
       onChange: this.handleBrandChange,
     });
-
-    const initialBrandId = brands[0].id;
-    this.carForm = new CarForm({
-      title: 'Sukurkite nauja automobilį',
-      status: 'create',
-      submitBtnText: 'Sukurti',
-      values: {
-        brand: initialBrandId,
-        model: models.filter((m) => m.brandId === initialBrandId)[0].id,
-        price: '0',
-        year: '2000',
-      },
-      onSubmit: this.handleCarCreate,
-
-    });
   }
 
   private handleBrandChange = (brandId: string) => {
     const brand = brands.find((newBrand) => newBrand.id === brandId);
     this.selectedBrandId = brand ? brandId : null;
+    this.editedCarId = null;
 
     this.update();
   };
 
   private handleCarDelete = (carId: string) => {
     this.carsCollection.deleteCarById(carId);
+    this.editedCarId = null;
 
     this.update();
   };
 
   private handleCarEdit = (carId: string) => {
     this.editedCarId = carId === this.editedCarId ? null : carId;
+
     this.update();
   };
 
@@ -106,7 +109,6 @@ class App {
       price: Number(price),
       year: Number(year),
     };
-
     this.carsCollection.add(carProps);
 
     this.update();
@@ -122,8 +124,8 @@ class App {
         price: Number(price),
         year: Number(year),
       };
-
-      this.carsCollection.carUpdate(this.editedCarId, carProps);
+      this.carsCollection.updateCar(this.editedCarId, carProps);
+      this.editedCarId = null;
       this.update();
     }
   };
@@ -138,7 +140,7 @@ class App {
         editedCarId,
       });
     } else {
-      const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
+      const brand = brands.find((newBrand) => newBrand.id === selectedBrandId);
       if (brand === undefined) throw new Error(`Pasirinkta neegzistuojanti ${ALL_BRAND_TITLE}`);
 
       this.carTable.updateProps({
@@ -148,7 +150,7 @@ class App {
       });
     }
     if (editedCarId) {
-      const editedCar = cars.find((c) => c.id === editedCarId);
+      const editedCar = cars.find((newCar) => newCar.id === editedCarId);
       if (!editedCar) {
         alert(`Klaida! nėra tokios mašinos ${editedCarId}`);
         return;
@@ -174,15 +176,14 @@ class App {
         onSubmit: this.handleCarUpdate,
       });
     } else {
-      const initialBrandId = brands[0].id;
       this.carForm.updateProps({
         title: 'Sukurkite  automobilį',
         submitBtnText: 'Sukurti',
         values: {
           brand: initialBrandId,
           model: models.filter((m) => m.brandId === initialBrandId)[0].id,
-          price: '',
-          year: '',
+          price: '0',
+          year: '0',
         },
         status: 'create',
         onSubmit: this.handleCarCreate,
@@ -204,7 +205,6 @@ class App {
       this.brandSelect.htmlElement,
       uxContainer,
     );
-
     this.htmlElement.append(container);
   };
 }

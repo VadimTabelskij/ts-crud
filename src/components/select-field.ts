@@ -49,7 +49,7 @@ class SelectField {
     );
   };
 
-  private renderSelectOptions = (): void => {
+  private renderSelectOptionsView = (): void => {
     const { options, value } = this.props;
 
     const optionsHtmlElements = options.map((option) => {
@@ -75,7 +75,7 @@ class SelectField {
     if (name) {
       this.htmlSelectElement.name = name;
     }
-    this.renderSelectOptions();
+    this.renderSelectOptionsView();
   };
 
   public updateProps = (newProps: Partial<SelectFieldProps>): void => {
