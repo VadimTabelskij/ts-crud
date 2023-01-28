@@ -11,10 +11,11 @@ export type Values = {
 };
 
 type CarFormProps = {
-  values: Values,
   title: string,
+  values: Values,
   submitBtnText: string,
   onSubmit: (values: Values) => void,
+  status: 'create' | 'update'
 };
 
 type Fields = {
@@ -71,16 +72,17 @@ class CarForm {
   }
 
   private initialize = (): void => {
-    this.htmlFormHeader.className = 'h3 text-center text-primary';
+    this.htmlFormHeader.className = 'h3 text-center';
 
     const fieldsArr = Object.values(this.fields);
-    this.htmlFieldsContainer.className = 'd-flex flex-column gap-3';
+    this.htmlFieldsContainer.className = 'd-flex flex-column gap-2';
     this.htmlFieldsContainer.append(...fieldsArr.map((field) => field.htmlElement));
 
-    this.htmlSubmitBtn.className = 'btn btn-primary mt-3 w-100';
+    this.htmlSubmitBtn.className = 'btn w-100';
     this.htmlSubmitBtn.type = 'submit';
 
-    this.htmlElement.className = 'shadow p-3 border border-primary';
+    this.htmlElement.className = 'shadow p-3 border';
+    this.htmlElement.style.width = '400px';
 
     this.htmlElement.append(
       this.htmlFormHeader,
@@ -102,7 +104,7 @@ class CarForm {
     const year = formData.get('year') as string | null;
 
     if (!(brand && price && model && year)) {
-      alert('blogi formos duomenys');
+      alert('Blogi formos duomenys');
       return;
     }
 
@@ -117,12 +119,30 @@ class CarForm {
     this.htmlElement.reset();
   };
 
+  private renderStatusStyleView = () => {
+    if (this.props.status === 'create') {
+      this.htmlFormHeader.classList.remove('text-warning');
+      this.htmlSubmitBtn.classList.remove('btn-warning');
+      this.htmlElement.classList.remove('border-warning');
+      this.htmlFormHeader.classList.add('text-primary');
+      this.htmlSubmitBtn.classList.add('btn-primary');
+      this.htmlElement.classList.add('border-primary');
+    } else {
+      this.htmlFormHeader.classList.remove('text-primary');
+      this.htmlSubmitBtn.classList.remove('btn-primary');
+      this.htmlElement.classList.remove('border-primary');
+      this.htmlFormHeader.classList.add('text-warning');
+      this.htmlSubmitBtn.classList.add('btn-warning');
+      this.htmlElement.classList.add('border-warning');
+    }
+  };
+
   private renderView = (): void => {
     const { title, values, submitBtnText } = this.props;
-
     this.htmlFormHeader.innerHTML = title;
-
     this.htmlSubmitBtn.innerHTML = submitBtnText;
+
+    this.renderStatusStyleView();
 
     const valuesKeyValueArr = Object.entries(values) as [keyof Values, string][];
     valuesKeyValueArr.forEach(([fieldName, fieldValue]) => {

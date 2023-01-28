@@ -65,7 +65,8 @@ class App {
 
     const initialBrandId = brands[0].id;
     this.carForm = new CarForm({
-      title: 'Sukurkite naują automobilį',
+      title: 'Sukurkite automobilį',
+      status: 'create',
       submitBtnText: 'Sukurti',
       values: {
         brand: initialBrandId,
@@ -74,6 +75,7 @@ class App {
         year: '2000',
       },
       onSubmit: this.handleCarCreate,
+
     });
   }
 
@@ -127,6 +129,19 @@ class App {
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
         editedCarId: this.editedCarId,
+      });
+    }
+    if (this.editedCarId === null) {
+      this.carForm.updateProps({
+        title: 'Auto sukūrimas',
+        submitBtnText: 'Sukurti',
+        status: 'create',
+      });
+    } else {
+      this.carForm.updateProps({
+        title: 'Auto atnaujinimas',
+        submitBtnText: 'Atnaujinti',
+        status: 'update',
       });
     }
   };

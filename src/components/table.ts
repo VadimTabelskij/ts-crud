@@ -90,7 +90,7 @@ class Table<Type extends TablesRowData> {
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
         const updateButton = document.createElement('button');
-        updateButton.className = `btn btn-action btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm`;
+        updateButton.className = `btn btn-row btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm`;
         updateButton.innerText = thisRowIsEdited ? '🛇' : '↻';
         updateButton.addEventListener('click', () => this.props.onEdit(rowData.id));
 
