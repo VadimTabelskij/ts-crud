@@ -72,6 +72,32 @@ class CarsCollection {
 
     cars.push(newCar);
   };
+
+  public carUpdate = (carId: string, { brandId, modelId, ...props }: CarProps) => {
+    const { cars, models, brands } = this.props;
+
+    const updatedCarIndex = cars.findIndex((newCar) => newCar.id === carId);
+    if (updatedCarIndex === -1) {
+      throw new Error(`Atnaujinimo klaida: nerasta mašina su id: '${carId}'`);
+    }
+
+    const model = models.find((newModel) => newModel.id === modelId);
+    if (!model) {
+      throw new Error(`Atnaujinimo klaida: nerastas mašinos modelis su id: '${modelId}'`);
+    }
+
+    const brand = brands.find((newBrand) => newBrand.id === brandId);
+    if (!brand) {
+      throw new Error(`Atnaujinimo klaida: nerasta mašinos markė su id: '${brandId}'`);
+    }
+
+    const updatedCar: Car = {
+      ...cars[updatedCarIndex],
+      ...props,
+      modelId,
+    };
+    this.props.cars.splice(updatedCarIndex, 1, updatedCar);
+  };
 }
 
 export default CarsCollection;

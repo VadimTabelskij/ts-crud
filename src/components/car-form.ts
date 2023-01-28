@@ -78,11 +78,10 @@ class CarForm {
     this.htmlFieldsContainer.className = 'd-flex flex-column gap-2';
     this.htmlFieldsContainer.append(...fieldsArr.map((field) => field.htmlElement));
 
-    this.htmlSubmitBtn.className = 'btn w-100';
+    this.htmlSubmitBtn.className = 'btn  mt-4 w-100 ';
     this.htmlSubmitBtn.type = 'submit';
 
-    this.htmlElement.className = 'shadow p-3 border';
-    this.htmlElement.style.width = '400px';
+    this.htmlElement.className = 'shadow p-3 border style-width';
 
     this.htmlElement.append(
       this.htmlFormHeader,

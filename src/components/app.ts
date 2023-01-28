@@ -65,7 +65,7 @@ class App {
 
     const initialBrandId = brands[0].id;
     this.carForm = new CarForm({
-      title: 'Sukurkite automobilį',
+      title: 'Sukurkite nauja automobilį',
       status: 'create',
       submitBtnText: 'Sukurti',
       values: {
@@ -112,14 +112,30 @@ class App {
     this.update();
   };
 
+  private handleCarUpdate = ({
+    brand, model, price, year,
+  }: Values): void => {
+    if (this.editedCarId) {
+      const carProps: CarProps = {
+        brandId: brand,
+        modelId: model,
+        price: Number(price),
+        year: Number(year),
+      };
+
+      this.carsCollection.carUpdate(this.editedCarId, carProps);
+      this.update();
+    }
+  };
+
   private update = () => {
-    const { selectedBrandId, carsCollection } = this;
+    const { selectedBrandId, carsCollection, editedCarId } = this;
 
     if (selectedBrandId === null) {
       this.carTable.updateProps({
         title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
-        editedCarId: this.editedCarId,
+        editedCarId,
       });
     } else {
       const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
@@ -128,20 +144,48 @@ class App {
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
-        editedCarId: this.editedCarId,
+        editedCarId,
       });
     }
-    if (this.editedCarId === null) {
+    if (editedCarId) {
+      const editedCar = cars.find((c) => c.id === editedCarId);
+      if (!editedCar) {
+        alert(`Klaida! nėra tokios mašinos ${editedCarId}`);
+        return;
+      }
+
+      const model = models.find((newModel) => newModel.id === editedCar.modelId);
+
+      if (!model) {
+        alert(`Klaida! nėra tokios mašinos su ${model}`);
+        return;
+      }
+
       this.carForm.updateProps({
-        title: 'Auto sukūrimas',
-        submitBtnText: 'Sukurti',
-        status: 'create',
+        title: 'Atnaujinkite automobilį',
+        submitBtnText: 'Atnaujinti',
+        values: {
+          brand: model.brandId,
+          model: model.id,
+          price: String(editedCar.price),
+          year: String(editedCar.year),
+        },
+        status: 'update',
+        onSubmit: this.handleCarUpdate,
       });
     } else {
+      const initialBrandId = brands[0].id;
       this.carForm.updateProps({
-        title: 'Auto atnaujinimas',
-        submitBtnText: 'Atnaujinti',
-        status: 'update',
+        title: 'Sukurkite  automobilį',
+        submitBtnText: 'Sukurti',
+        values: {
+          brand: initialBrandId,
+          model: models.filter((m) => m.brandId === initialBrandId)[0].id,
+          price: '',
+          year: '',
+        },
+        status: 'create',
+        onSubmit: this.handleCarCreate,
       });
     }
   };
