@@ -37,7 +37,7 @@ class CarsCollection {
     return this.props.cars.map(this.joinCar);
   }
 
-  public getByBrandId = (brandId: string): CarJoined[] => {
+  public getBrandById = (brandId: string): CarJoined[] => {
     const { cars, models } = this.props;
 
     const brandModelsIds = models

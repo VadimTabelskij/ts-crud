@@ -1,7 +1,7 @@
 export type TextFieldProps = {
   labelText: string;
-  name: string,
-  value?: string,
+  name: string;
+  value?: string;
 };
 
 class TextField {
@@ -37,6 +37,7 @@ class TextField {
 
     this.input.id = this.id;
     this.input.className = 'form-control';
+    this.input.type = 'text';
 
     this.htmlElement.append(
       this.label,
@@ -47,6 +48,10 @@ class TextField {
   private renderView = () => {
     this.label.innerText = this.props.labelText;
     this.input.name = this.props.name;
+
+    if (this.props.value !== undefined) {
+      this.input.value = this.props.value;
+    }
   };
 
   public updateProps = (props: Partial<TextFieldProps>) => {

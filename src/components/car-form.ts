@@ -103,7 +103,7 @@ class CarForm {
     const year = formData.get('year') as string | null;
 
     if (!(brand && price && model && year)) {
-      alert('Blogi formos duomenys');
+      alert(`Klaida! Blogi formos duomenys - ${brand} ${price} ${model} ${year}`);
       return;
     }
 

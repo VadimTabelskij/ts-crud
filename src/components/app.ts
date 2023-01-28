@@ -61,8 +61,8 @@ class App {
       values: {
         brand: initialBrandId,
         model: models.filter((m) => m.brandId === initialBrandId)[0].id,
-        price: '0',
-        year: '2000',
+        price: '',
+        year: '',
       },
       status: 'create',
       onSubmit: this.handleCarCreate,
@@ -145,7 +145,7 @@ class App {
 
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
-        rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
+        rowsData: carsCollection.getBrandById(selectedBrandId).map(stringifyProps),
         editedCarId,
       });
     }
